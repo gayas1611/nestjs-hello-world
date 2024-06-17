@@ -1,0 +1,25 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: Amazon Linux
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+          ssh-key-path: C:\Users\Softtech\Downloads\gayas.pem
+
+      - name: SSH Deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@13.201.35.110 'cd /home/ec2-user/nestjs-hello-world && git pull && npm install && npm run build && pm2 restart all'
